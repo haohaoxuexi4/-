@@ -1,0 +1,99 @@
+用的是mac机子，go语言的客户端
+
+
+1：从github上clone源码
+git clone https://github.com/ethereum/go-ethereum
+cd go-ethereum
+make geth 
+
+编译好的geth 再当前的go-ethereum目录中的build/bin/geth
+
+
+2:准备创世快文件
+在go-etherum的目录里创建随便一个目录 mypath 
+ 再mypath里创建一个文件piccgenesis.json文件 
+ 这个文件与网上搜的又一点变动，所以贴一个新的，具体配置说明可以查
+ {
+
+    "nonce": "0x0000000000000042",
+  "difficulty": "0x400",
+  "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "coinbase": "0x0000000000000000000000000000000000000000",
+  "timestamp": "0x00",
+  "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "extraData": "0x11bbe8db4e347b4e8c937c1c8370e4b5ed33adb3db69cbdb7a38e1e50b1b82fa",
+  "gasLimit": "0x1388",
+  "alloc": {
+    "3282791d6fd713f1e94f4bfd565eaa78b3a0599d": {
+      "balance": "1337000000000000000000"
+    },
+    "17961d633bcf20a7b029a7d94b7df4da2ec5427f": {
+      "balance": "229427000000000000000"
+    }
+  },
+  "config": {
+        "chainId": 15,
+        "homesteadBlock": 0,
+        "eip155Block": 0,
+        "eip158Block": 0
+    }
+}
+
+
+3 在mypath目录下启动
+geth  --datadir "$path/chain" init piccgenesis.json 
+geth --identity"PICCetherum"  --rpc  --rpccorsdomain "*" --datadir "$path/chain" --port "30303"  --rpcapi "db,eth,net,web3"--networkid 95518 console
+$path改成你的mypath目录
+
+4启动后。另外开一个终端 ，执行如下命令，把日志输出到指定目录
+geth --dev console 2>> file_to_log_output
+
+看到welcome to  th Geth Javascript
+命令集合:
+查看账户 eth.accounts 
+创建用户：personal.newAccount("1111")  //11111随便替换 
+查看区块数据：ethblockNumber
+启动挖矿：miner.start()
+停止挖矿：miner.stop()
+
+查看账户余额
+
+其中参数为区块链地址
+
+eth.getBalance("0x7d1f7be4112ce63b9de04a0bf95c1e87e430bd1b")
+1
+1
+转账
+
+从账户0x7d1f7be4112ce63b9de04a0bf95c1e87e430bd1b转账3个以太币到0x587e57a516730381958f86703b1f8e970ff445d9。
+
+eth.sendTransaction({from:"0x7d1f7be4112ce63b9de04a0bf95c1e87e430bd1b",to:"0x587e57a516730381958f86703b1f8e970ff445d9",value:web3.toWei(3,"ether")})
+1
+1
+当直接执行此方法时会抛出异常：
+
+account is locked
+    at web3.js:3119:20
+    at web3.js:6023:15
+    at web3.js:4995:36
+    at <anonymous>:1:1
+1
+2
+3
+4
+5
+1
+2
+3
+4
+5
+很明显，账户被锁。
+
+解锁转出账户
+
+其中第一个参数为转出账户，第二个参数为密码。也可以直填写第一个参数，然后通过命令行提示再输入密码。
+
+personal.unlockAccount("0x7d1f7be4112ce63b9de04a0bf95c1e87e430bd1b","111111")
+1
+1
+解锁完成之后，即可执行转账操作。但此时查看时会发现接收账户依旧为原来数值。此时需要执行挖矿命令，才会把转账真正完成。
