@@ -1,5 +1,8 @@
-用的是mac机子，go语言的客户端
-
+用的是mac机子，go语言的客户端c
+参考：
+http://8btc.com/article-3534-1.html
+https://bitshuo.com/topic/590068d69a87f1a331fa2a50
+http://blog.csdn.net/wo541075754/article/details/53073799
 
 1：从github上clone源码
 git clone https://github.com/ethereum/go-ethereum
